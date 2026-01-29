@@ -1,6 +1,8 @@
 'use client'
 
-import { Button, Container, Stack, Typography } from '@mui/material'
+import { Container, Stack, Typography } from '@mui/material'
+
+import CoreButton from '@/views/components/core/CoreButton'
 
 import { PageContainer } from './style'
 
@@ -9,22 +11,24 @@ export default function SelectUserPage() {
   return (
     <PageContainer>
       <Container>
-        <Stack gap={1}>
-          <Typography variant="h6" align="center">
+        <Stack gap={2}>
+          <Typography variant="h4" align="center">
             Select Account
           </Typography>
-          <Button variant="outlined">
-            <Stack gap={1}>
-              <Typography variant="body1">John Richman</Typography>
-              <Typography variant="caption">Balance: 10000฿</Typography>
-            </Stack>
-          </Button>
-          <Button variant="outlined">
-            <Stack gap={1}>
-              <Typography variant="body1">Jake Poorguy</Typography>
-              <Typography variant="caption">Balance: 10000฿</Typography>
-            </Stack>
-          </Button>
+          <Stack gap={1}>
+            <CoreButton variant="outlined" path="/?user='John Richman'" fullWidth>
+              <Stack gap={1}>
+                <Typography variant="body1">John Richman</Typography>
+                <Typography variant="caption">Balance: 10000฿</Typography>
+              </Stack>
+            </CoreButton>
+            <CoreButton variant="outlined" path="/?user='Jake Poorguy'" fullWidth>
+              <Stack gap={1}>
+                <Typography variant="body1">Jake Poorguy</Typography>
+                <Typography variant="caption">Balance: 10000฿</Typography>
+              </Stack>
+            </CoreButton>
+          </Stack>
         </Stack>
       </Container>
     </PageContainer>
