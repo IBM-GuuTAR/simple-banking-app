@@ -1,5 +1,7 @@
-import { ThemeProvider } from '@mui/material'
+'use client'
+
 import { ReactNode } from 'react'
+import { ThemeProvider } from '@mui/material'
 
 import { theme } from '@/theme/theme'
 
