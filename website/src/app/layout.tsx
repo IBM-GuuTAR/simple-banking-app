@@ -32,8 +32,8 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
         <RootProvider>
-          <Stack bgcolor="background.default" alignItems="center">
-            <Stack width={425} height="100vh" bgcolor="background.paper">
+          <Stack alignItems="center">
+            <Stack width={425} height="100vh" bgcolor="background.default">
               <NavBar />
               {children}
             </Stack>

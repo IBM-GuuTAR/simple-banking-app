@@ -1,3 +1,3 @@
-import SelectUserPage from '@/views/pages/select-user'
+import HomePage from '@/views/pages/home'
 
-export default SelectUserPage
+export default HomePage
