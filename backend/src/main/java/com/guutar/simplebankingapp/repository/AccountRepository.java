@@ -15,7 +15,7 @@ public class AccountRepository {
         this.accounts = new ArrayList<>();
         accounts.add(new Account(0, "Tony Stark", 100_000_000));
         accounts.add(new Account(1, "Peter Parker", 0));
-        accounts.add(new Account(1, "Tar Richman", 500));
+        accounts.add(new Account(2, "Tar Richman", 500));
     }
 
     public List<Account> findAll() {
