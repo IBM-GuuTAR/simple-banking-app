@@ -1,10 +1,8 @@
 package com.guutar.simplebankingapp.repository;
 
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import com.guutar.simplebankingapp.model.Transaction;
@@ -13,21 +11,37 @@ import com.guutar.simplebankingapp.model.TransactionInput;
 @Repository
 public class TransactionRepository {
 
-    private final List<Transaction> transactions;
+    private final JdbcTemplate jdbc;
 
-    public TransactionRepository() {
-        this.transactions = new ArrayList<>();
-        transactions.add(new Transaction(0, -1, 0, 100_000_000, Instant.now()
-                .minus(1, ChronoUnit.MINUTES)
-                .getEpochSecond()));
-        transactions.add(new Transaction(1, -1, 2, 500, Instant.now().getEpochSecond()));
+    public TransactionRepository(JdbcTemplate jdbc) {
+        this.jdbc = jdbc;
     }
 
     public List<Transaction> findAll() {
-        return this.transactions;
+        String sql = "SELECT * FROM transaction";
+        return jdbc.query(sql, (rs, rowNum)
+                -> new Transaction(
+                        rs.getInt("id"),
+                        rs.getInt("sender_id"),
+                        rs.getInt("receiver_id"),
+                        rs.getInt("amount"),
+                        rs.getLong("timestamp")
+                )
+        );
     }
 
     public void save(TransactionInput transaction) {
-        this.transactions.add(new Transaction(transactions.size(), transaction.getSenderId(), transaction.getReceiverId(), transaction.getAmount(), transaction.getTimestamp()));
+        String sql = """
+        INSERT INTO transaction (sender_id, receiver_id, amount, timestamp)
+        VALUES (?, ?, ?, ?)
+        """;
+
+        jdbc.update(
+                sql,
+                transaction.getSenderId(),
+                transaction.getReceiverId(),
+                transaction.getAmount(),
+                transaction.getTimestamp()
+        );
     }
 }
