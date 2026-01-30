@@ -1,4 +1,25 @@
 services:
+  mariadb:
+    image: mariadb:11.4
+    container_name: simple-bank-mariadb
+    restart: unless-stopped
+    environment:
+      MARIADB_ROOT_PASSWORD: password
+      MARIADB_DATABASE: simplebank
+      MARIADB_USER: simplebankuser
+      MARIADB_PASSWORD: simplebankpass
+    volumes:
+      - mariadb_data:/var/lib/mysql
+      - ./config/init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "3306:3306"
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - simple-bank-net
   website:
     build:
       context: ./website
@@ -22,11 +43,18 @@ services:
     ports:
       - "8080:8080"
     environment:
-      - SPRING_PROFILES_ACTIVE=prod
-    restart: unless-stopped
+      SPRING_PROFILES_ACTIVE: prod
+      SPRING_DATASOURCE_URL: jdbc:mariadb://mariadb:3306/simplebank?allowPublicKeyRetrieval=true&useSSL=false
+      SPRING_DATASOURCE_USERNAME: simplebankuser
+      SPRING_DATASOURCE_PASSWORD: simplebankpass
+      SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.mariadb.jdbc.Driver
+    depends_on:
+      mariadb:
+        condition: service_healthy
     networks:
       - simple-bank-net
-
+volumes:
+  mariadb_data:
 networks:
   simple-bank-net:
     driver: bridge
