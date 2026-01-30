@@ -4,7 +4,10 @@ import { Stack } from '@mui/material'
 
 import RootProvider from '@/providers/RootProvider'
 
+import Rendering from '@/views/components/core/Rendering'
+
 import NavBar from '@/views/components/common/Navbar'
+import Instana from '@/views/components/common/Instana'
 
 import './globals.css'
 
@@ -30,14 +33,19 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <Instana />
+      </head>
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
         <RootProvider>
-          <Stack alignItems="center">
-            <Stack width={425} height="100vh" bgcolor="background.default">
-              <NavBar />
-              {children}
+          <Rendering>
+            <Stack alignItems="center">
+              <Stack width={425} height="100vh" bgcolor="background.default">
+                <NavBar />
+                {children}
+              </Stack>
             </Stack>
-          </Stack>
+          </Rendering>
         </RootProvider>
       </body>
     </html>
