@@ -6,17 +6,14 @@ export const ACCOUNT_DATA_MOCK: AccountData[] = [
   {
     id: 0,
     displayName: 'Tony Stark',
-    balance: 100_000_000,
   },
   {
     id: 1,
     displayName: 'Peter Parker',
-    balance: 0,
   },
   {
     id: 2,
     displayName: 'Tar Richman',
-    balance: 500,
   },
 ]
 
