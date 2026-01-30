@@ -5,6 +5,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Container, InputAdornment, MenuItem, Stack, TextField, Typography } from '@mui/material'
 import AccountCircle from '@mui/icons-material/AccountCircle'
 import { NumericFormat } from 'react-number-format'
+import dayjs from 'dayjs'
 
 import { AccountData } from '@/types'
 
@@ -20,14 +21,14 @@ import { ContentContainer, PageContainer, PageTitleContainer } from './style'
 export default function TransferPage() {
   const router = useRouter()
 
-  const { selectedAccount, accounts } = useAppData()
+  const { selectedAccount, displayAccounts, insertTransaction } = useAppData()
 
   const [userId, setUserId] = useState<string>()
   const [amount, setAmount] = useState<string>('0')
 
   const transferableAccounts: AccountData[] = useMemo(
-    () => accounts.filter((account) => account.id !== selectedAccount?.id),
-    [accounts, selectedAccount],
+    () => displayAccounts.filter((account) => account.id !== selectedAccount?.id),
+    [displayAccounts, selectedAccount],
   )
 
   const isTransferable: boolean = useMemo(
@@ -35,12 +36,20 @@ export default function TransferPage() {
     [transferableAccounts.length, userId],
   )
 
-  // TODO: Connect Real API
-  const handleTransfer = useCallback(() => {
-    console.log(userId, Number(amount))
+  const handleTransfer = useCallback(async () => {
+    const amountNumber: number = Number(amount.replaceAll(',', ''))
+
+    if (!selectedAccount || !userId || amountNumber <= 0) return
+
+    insertTransaction({
+      senderId: selectedAccount?.id,
+      receiverId: Number(userId),
+      amount: amountNumber,
+      timestamp: dayjs().unix(),
+    })
 
     redirect('/', RedirectType.push)
-  }, [userId, amount])
+  }, [userId, amount, selectedAccount, insertTransaction])
 
   const handleGoBack = useCallback(() => {
     router.back()

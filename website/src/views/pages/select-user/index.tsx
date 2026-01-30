@@ -4,8 +4,6 @@ import { redirect, RedirectType } from 'next/navigation'
 import { useCallback } from 'react'
 import { Container, Stack, Typography } from '@mui/material'
 
-import { AccountData } from '@/types'
-
 import { useAppData } from '@/providers/AppDataProvider'
 
 import CoreButton from '@/views/components/core/CoreButton'
@@ -13,11 +11,11 @@ import CoreButton from '@/views/components/core/CoreButton'
 import { PageContainer } from './style'
 
 export default function SelectUserPage() {
-  const { selectUser, accounts } = useAppData()
+  const { selectUser, displayAccounts } = useAppData()
 
   const handleSelectUser = useCallback(
-    (account: AccountData) => {
-      selectUser(account)
+    (accountId: number) => {
+      selectUser(accountId)
       redirect('/', RedirectType.push)
     },
     [selectUser],
@@ -31,8 +29,8 @@ export default function SelectUserPage() {
             Select Account
           </Typography>
           <Stack gap={1}>
-            {accounts.map((account) => (
-              <CoreButton key={account.id} variant="outlined" onClick={() => handleSelectUser(account)} fullWidth>
+            {displayAccounts.map((account) => (
+              <CoreButton key={account.id} variant="outlined" onClick={() => handleSelectUser(account.id)} fullWidth>
                 <Stack gap={1}>
                   <Typography variant="body1">{account.displayName}</Typography>
                   <Typography variant="caption">Balance: {account.balance}฿</Typography>

@@ -1,9 +1,6 @@
 'use client'
 
-import { useMemo } from 'react'
 import { Container, Stack, Typography } from '@mui/material'
-
-import { TransactionData } from '@/types'
 
 import { useAppData } from '@/providers/AppDataProvider'
 
@@ -15,14 +12,7 @@ import BalanceCard from '@/views/components/common/BalanceCard'
 import { ContentContainer, PageContainer, TransactionContainer } from './style'
 
 export default function Homepage() {
-  const { selectedAccount, accounts, transactions } = useAppData()
-
-  const accountTransactions: TransactionData[] = useMemo(() => {
-    if (!selectedAccount) return []
-    return transactions
-      .filter((tx) => tx.senderId === selectedAccount.id || tx.receiverId === selectedAccount.id)
-      .sort((left, right) => right.timestamp - left.timestamp)
-  }, [selectedAccount, transactions])
+  const { selectedAccount, displayAccounts } = useAppData()
 
   if (!selectedAccount) return <Redirect path="/login" />
   return (
@@ -37,8 +27,8 @@ export default function Homepage() {
         <ContentContainer>
           <Typography variant="h6">Transaction History</Typography>
           <Stack gap={2}>
-            {accountTransactions.length > 0 ? (
-              accountTransactions.map((tx) => (
+            {selectedAccount.transactions.length > 0 ? (
+              selectedAccount.transactions.map((tx) => (
                 <Stack key={tx.id}>
                   <TransactionContainer>
                     <Typography variant="body1">
@@ -51,8 +41,8 @@ export default function Homepage() {
                   <Typography variant="body1">
                     {tx.senderId === selectedAccount.id ? 'to' : 'from'}{' '}
                     {tx.senderId === selectedAccount.id
-                      ? (accounts.find((acc) => acc.id === tx.receiverId)?.displayName ?? 'Unknow')
-                      : (accounts.find((acc) => acc.id === tx.senderId)?.displayName ?? 'Unknow')}
+                      ? (displayAccounts.find((account) => account.id === tx.receiverId)?.displayName ?? 'Unknow')
+                      : (displayAccounts.find((account) => account.id === tx.senderId)?.displayName ?? 'Unknow')}
                   </Typography>
                 </Stack>
               ))
