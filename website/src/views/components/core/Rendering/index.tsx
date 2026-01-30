@@ -15,9 +15,9 @@ type Props = {
 export default function Rendering({ children }: Props) {
   const pathname = usePathname()
 
-  const { isDataLoaded, displayName } = useAppData()
+  const { isDataLoaded, selectedAccount } = useAppData()
 
   if (!isDataLoaded) return <CircularProgress color="secondary" />
-  else if (pathname !== '/login' && !displayName) return <Redirect path="/login" />
+  else if (pathname !== '/login' && !selectedAccount) return <Redirect path="/login" />
   return children
 }
