@@ -2,7 +2,9 @@ import { createContext, ReactNode, useCallback, useContext, useEffect, useState 
 
 import { AccountData, TransactionData } from '@/types'
 
-import { ACCOUNT_DATA_MOCK, TRANSACTIONS_DATA_MOCK } from '@/data'
+import { TRANSACTIONS_DATA_MOCK } from '@/data'
+
+import { accountService } from '@/service/AccountService'
 
 export type AppDataContextType = {
   selectedAccount?: AccountData
@@ -27,8 +29,9 @@ export const AppDataProvider = ({ children }: Props) => {
   const [transactions, setTransactions] = useState<TransactionData[]>([])
 
   useEffect(() => {
-    const initialize = () => {
-      setAccounts(ACCOUNT_DATA_MOCK)
+    const initialize = async () => {
+      const _accounts = await accountService.fetchAccount()
+      setAccounts(_accounts)
       setTransactions(TRANSACTIONS_DATA_MOCK)
       setIsDataLoaded(true)
     }
