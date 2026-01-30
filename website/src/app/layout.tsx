@@ -7,6 +7,7 @@ import RootProvider from '@/providers/RootProvider'
 import Rendering from '@/views/components/core/Rendering'
 
 import NavBar from '@/views/components/common/Navbar'
+import Instana from '@/views/components/common/Instana'
 
 import './globals.css'
 
@@ -32,6 +33,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <Instana />
+      </head>
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
         <RootProvider>
           <Rendering>
