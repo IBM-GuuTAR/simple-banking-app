@@ -30,8 +30,8 @@ export default function Homepage() {
       <PageContainer>
         <BalanceCard />
         <Stack>
-          <CoreButton variant="contained" path="/tranfer" fullWidth>
-            Tranfer Money
+          <CoreButton variant="contained" path="/transfer" fullWidth>
+            Transfer Money
           </CoreButton>
         </Stack>
         <ContentContainer>
@@ -42,7 +42,7 @@ export default function Homepage() {
                 <Stack key={tx.id}>
                   <TransactionContainer>
                     <Typography variant="body1">
-                      {tx.senderId === selectedAccount.id ? 'Tranfer' : 'Receive'}
+                      {tx.senderId === selectedAccount.id ? 'Transfer' : 'Receive'}
                     </Typography>
                     <Typography variant="body1">
                       {tx.senderId === selectedAccount.id ? '-' : '+'} ฿ {tx.amount}

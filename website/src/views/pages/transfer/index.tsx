@@ -17,7 +17,7 @@ import BalanceCard from '@/views/components/common/BalanceCard'
 
 import { ContentContainer, PageContainer, PageTitleContainer } from './style'
 
-export default function TranferPage() {
+export default function TransferPage() {
   const router = useRouter()
 
   const { selectedAccount, accounts } = useAppData()
@@ -25,18 +25,18 @@ export default function TranferPage() {
   const [userId, setUserId] = useState<string>()
   const [amount, setAmount] = useState<string>('0')
 
-  const tranferableAccounts: AccountData[] = useMemo(
+  const transferableAccounts: AccountData[] = useMemo(
     () => accounts.filter((account) => account.id !== selectedAccount?.id),
     [accounts, selectedAccount],
   )
 
-  const isTranferable: boolean = useMemo(
-    () => userId !== undefined && tranferableAccounts.length > 0,
-    [tranferableAccounts.length, userId],
+  const isTransferable: boolean = useMemo(
+    () => userId !== undefined && transferableAccounts.length > 0,
+    [transferableAccounts.length, userId],
   )
 
   // TODO: Connect Real API
-  const handleTranfer = useCallback(() => {
+  const handleTransfer = useCallback(() => {
     console.log(userId, Number(amount))
 
     redirect('/', RedirectType.push)
@@ -48,13 +48,13 @@ export default function TranferPage() {
 
   useEffect(() => {
     const handleSetDefaultAccount = () => {
-      if (tranferableAccounts.length) {
-        setUserId(tranferableAccounts[0].id.toString())
+      if (transferableAccounts.length) {
+        setUserId(transferableAccounts[0].id.toString())
       }
     }
 
     handleSetDefaultAccount()
-  }, [tranferableAccounts])
+  }, [transferableAccounts])
 
   if (!selectedAccount) return <Redirect path="/login" />
   return (
@@ -64,13 +64,13 @@ export default function TranferPage() {
           <Stack width={70}>
             <CoreButton onClick={handleGoBack}>{`< Back`}</CoreButton>
           </Stack>
-          <Typography variant="h6">Tranfer</Typography>
+          <Typography variant="h6">Transfer</Typography>
           <Stack width={70} />
         </PageTitleContainer>
         <BalanceCard />
         <ContentContainer>
-          <Typography variant="h6">Tranfer to</Typography>
-          {isTranferable ? (
+          <Typography variant="h6">Transfer to</Typography>
+          {isTransferable ? (
             <Stack gap={2}>
               <TextField
                 variant="standard"
@@ -87,7 +87,7 @@ export default function TranferPage() {
                 }}
                 select
               >
-                {tranferableAccounts.map((account) => (
+                {transferableAccounts.map((account) => (
                   <MenuItem key={account.id} value={account.id}>
                     {account.displayName}
                   </MenuItem>
@@ -114,13 +114,13 @@ export default function TranferPage() {
                 }}
               />
               <Stack alignSelf="flex-end">
-                <CoreButton variant="contained" onClick={handleTranfer}>
-                  Confirm Tranfer
+                <CoreButton variant="contained" onClick={handleTransfer}>
+                  Confirm Transfer
                 </CoreButton>
               </Stack>
             </Stack>
           ) : (
-            <Typography variant="body1">Cannot process tranfer feature</Typography>
+            <Typography variant="body1">Cannot process transfer feature</Typography>
           )}
         </ContentContainer>
       </PageContainer>
