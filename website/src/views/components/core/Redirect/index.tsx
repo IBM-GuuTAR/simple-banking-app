@@ -1,4 +1,4 @@
-import { redirect, RedirectType } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import { useEffect } from 'react'
 
 type Props = {
@@ -6,9 +6,11 @@ type Props = {
 }
 
 export default function Redirect({ path }: Props) {
+  const router = useRouter()
+
   useEffect(() => {
-    redirect(path, RedirectType.replace)
-  }, [path])
+    router.replace(path)
+  }, [path, router])
 
   return <></>
 }

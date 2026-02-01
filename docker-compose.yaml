@@ -24,10 +24,18 @@ services:
     build:
       context: ./website
       dockerfile: Dockerfile
+      args:
+        - NEXT_PUBLIC_INSTANA_REPORT_URL=https://eum-orange-saas.instana.io
+        - NEXT_PUBLIC_INSTANA_EUM_KEY=XGKoMnXoTKOROE_ZUYmdpw
+        - NEXT_PUBLIC_BACKEND_URL=http://localhost:8080
     image: simple-bank-website:latest
     container_name: simple-bank-website
     ports:
       - "80:80"
+    environment:
+      - NEXT_PUBLIC_INSTANA_REPORT_URL=https://eum-orange-saas.instana.io
+      - NEXT_PUBLIC_INSTANA_EUM_KEY=XGKoMnXoTKOROE_ZUYmdpw
+      - NEXT_PUBLIC_BACKEND_URL=http://localhost:8080
     depends_on:
       - backend
     restart: unless-stopped
