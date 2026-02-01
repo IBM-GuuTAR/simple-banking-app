@@ -2,9 +2,11 @@ package com.guutar.simplebankingapp.repository;
 
 import java.util.List;
 
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import com.guutar.simplebankingapp.config.RabbitMQConfig;
 import com.guutar.simplebankingapp.model.Transaction;
 import com.guutar.simplebankingapp.model.TransactionInput;
 
@@ -12,9 +14,11 @@ import com.guutar.simplebankingapp.model.TransactionInput;
 public class TransactionRepository {
 
     private final JdbcTemplate jdbc;
+    private final RabbitTemplate rabbitTemplate;
 
-    public TransactionRepository(JdbcTemplate jdbc) {
+    public TransactionRepository(JdbcTemplate jdbc, RabbitTemplate rabbitTemplate) {
         this.jdbc = jdbc;
+        this.rabbitTemplate = rabbitTemplate;
     }
 
     public List<Transaction> findAll() {
@@ -42,6 +46,14 @@ public class TransactionRepository {
                 transaction.getReceiverId(),
                 transaction.getAmount(),
                 transaction.getTimestamp()
+        );
+    }
+
+    public void sendTxMessage(TransactionInput transaction) {
+        rabbitTemplate.convertAndSend(
+                RabbitMQConfig.EXCHANGE,
+                RabbitMQConfig.ROUTING_KEY,
+                transaction
         );
     }
 }
