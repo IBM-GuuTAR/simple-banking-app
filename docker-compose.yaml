@@ -41,7 +41,6 @@ services:
     restart: unless-stopped
     networks:
       - simple-bank-net
-
   backend:
     build:
       context: ./backend
@@ -56,13 +55,35 @@ services:
       SPRING_DATASOURCE_USERNAME: simplebankuser
       SPRING_DATASOURCE_PASSWORD: simplebankpass
       SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.mariadb.jdbc.Driver
+      SPRING_RABBITMQ_HOST: rabbitmq
+      SPRING_RABBITMQ_PORT: 5672
+      SPRING_RABBITMQ_USERNAME: simplebankuser
+      SPRING_RABBITMQ_PASSWORD: simplebankpass
     depends_on:
       mariadb:
         condition: service_healthy
+      rabbitmq:
+        condition: service_started
+    restart: unless-stopped
+    networks:
+      - simple-bank-net
+  rabbitmq:
+    image: rabbitmq:3.13-management-alpine
+    container_name: simple-bank-rabbitmq
+    restart: unless-stopped
+    environment:
+      RABBITMQ_DEFAULT_USER: simplebankuser
+      RABBITMQ_DEFAULT_PASS: simplebankpass
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
     networks:
       - simple-bank-net
 volumes:
   mariadb_data:
+  rabbitmq_data:
 networks:
   simple-bank-net:
     driver: bridge
