@@ -81,6 +81,21 @@ services:
       - rabbitmq_data:/var/lib/rabbitmq
     networks:
       - simple-bank-net
+  consumer:
+    build: ./consumer
+    container_name: simple-bank-consumer
+    environment:
+      RABBITMQ_URL: amqp://simplebankuser:simplebankpass@rabbitmq:5672
+      DB_HOST: mariadb
+      DB_USER: simplebankuser
+      DB_PASS: simplebankpass
+      DB_NAME: simplebank
+    depends_on:
+      - rabbitmq
+      - mariadb
+    restart: unless-stopped
+    networks:
+      - simple-bank-net
 volumes:
   mariadb_data:
   rabbitmq_data:
