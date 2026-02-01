@@ -35,7 +35,10 @@ export const AppDataProvider = ({ children }: Props) => {
       const _accounts: AccountData[] = await accountService.fetchAccount()
       const _transactions: TransactionData[] = await transactionService.fetchTransaction()
 
-      const displayAccounts: DisplayAccountData[] = accountService.renderDisplayAccounts(_accounts, _transactions)
+      const displayAccounts: DisplayAccountData[] = accountService.renderDisplayAccounts(
+        _accounts.filter((account) => account.id !== 1),
+        _transactions,
+      )
       setDisplayAccounts(displayAccounts)
 
       setIsDataLoaded(true)
@@ -48,7 +51,10 @@ export const AppDataProvider = ({ children }: Props) => {
     const _accounts: AccountData[] = await accountService.fetchAccount()
     const _transactions: TransactionData[] = await transactionService.fetchTransaction()
 
-    const displayAccounts: DisplayAccountData[] = accountService.renderDisplayAccounts(_accounts, _transactions)
+    const displayAccounts: DisplayAccountData[] = accountService.renderDisplayAccounts(
+      _accounts.filter((account) => account.id !== 1),
+      _transactions,
+    )
     setDisplayAccounts(displayAccounts)
   }, [])
 

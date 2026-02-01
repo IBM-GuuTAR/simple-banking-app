@@ -1,24 +1,28 @@
 package com.guutar.simplebankingapp.repository;
 
-import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import com.guutar.simplebankingapp.model.Account;
 
 @Repository
 public class AccountRepository {
-    private final List<Account> accounts;
 
-    public AccountRepository() {
-        this.accounts = new ArrayList<>();
-        accounts.add(new Account(0, "Tony Stark", 100_000_000));
-        accounts.add(new Account(1, "Peter Parker", 0));
-        accounts.add(new Account(2, "Tar Richman", 500));
+    private final JdbcTemplate jdbc;
+
+    public AccountRepository(JdbcTemplate jdbc) {
+        this.jdbc = jdbc;
     }
 
     public List<Account> findAll() {
-        return this.accounts;
+        String sql = "SELECT id, display_name FROM account";
+        return jdbc.query(sql, (rs, rowNum)
+                -> new Account(
+                        rs.getInt("id"),
+                        rs.getString("display_name")
+                )
+        );
     }
 }

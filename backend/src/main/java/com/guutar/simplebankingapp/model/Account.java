@@ -4,7 +4,7 @@ public class Account {
     private int id;
     private String displayName;
 
-    public Account(int id, String displayName, int balance) {
+    public Account(int id, String displayName) {
         this.id = id;
         this.displayName = displayName;
     }
