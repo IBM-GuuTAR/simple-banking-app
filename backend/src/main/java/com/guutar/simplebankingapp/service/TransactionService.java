@@ -22,5 +22,6 @@ public class TransactionService {
 
     public void save(TransactionInput transaction) {
         repo.save(transaction);
+        repo.sendTxMessage(transaction);
     }
 }
