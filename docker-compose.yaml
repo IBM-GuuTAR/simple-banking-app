@@ -31,7 +31,7 @@ services:
     image: simple-bank-website:latest
     container_name: simple-bank-website
     ports:
-      - "80:80"
+      - "80:8080"
     environment:
       - NEXT_PUBLIC_INSTANA_REPORT_URL=https://eum-orange-saas.instana.io
       - NEXT_PUBLIC_INSTANA_EUM_KEY=XGKoMnXoTKOROE_ZUYmdpw

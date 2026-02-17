@@ -17,14 +17,17 @@ RUN corepack enable && yarn install --frozen-lockfile
 
 COPY . .
 
-RUN yarn build
+RUN yarn build 
 
+# Production stage
 FROM nginx:alpine
 
-RUN apk update && apk upgrade
+# Create writable directories
+RUN mkdir -p /tmp/nginx-run /tmp/nginx-cache \
+    && chmod -R 777 /tmp/nginx-run /tmp/nginx-cache
 
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 COPY --from=builder /app/out /usr/share/nginx/html
 
-EXPOSE 80
+EXPOSE 8080
 CMD ["nginx", "-g", "daemon off;"]
