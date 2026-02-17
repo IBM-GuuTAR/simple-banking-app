@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: website
+  namespace: simple-bank
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: website
+  template:
+    metadata:
+      labels:
+        app: website
+    spec:
+      containers:
+        - name: website
+          image: guutar/simple-bank-website:latest
+          volumeMounts:
+            - name: nginx-cache
+              mountPath: /var/cache/nginx
+          ports:
+            - containerPort: 8080
+          env:
+            - name: NEXT_PUBLIC_BACKEND_URL
+              value: http://backend:8080
+      volumes:
+        - name: nginx-cache
+          emptyDir: {}

@@ -1,0 +1,9 @@
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: website
+  namespace: simple-bank
+spec:
+  to:
+    kind: Service
+    name: website
