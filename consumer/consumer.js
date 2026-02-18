@@ -1,3 +1,5 @@
+import '@instana/collector';
+
 import amqp from "amqplib";
 
 import { pool } from "./db.js";
