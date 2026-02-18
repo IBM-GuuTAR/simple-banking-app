@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: mariadb
-          image: mariadb:11.4
+          image: guutar/simple-bank-mariadb:latest
           ports:
             - containerPort: 3306
           env:

@@ -7,4 +7,9 @@ spec:
   selector:
     app: rabbitmq
   ports:
-    - port: 5672
+    - name: amqp
+      port: 5672
+      targetPort: 5672
+    - name: http
+      port: 80
+      targetPort: 15672

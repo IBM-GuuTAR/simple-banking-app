@@ -1,11 +1,11 @@
 apiVersion: route.openshift.io/v1
 kind: Route
 metadata:
-  name: website
+  name: rabbitmq
   namespace: simple-bank
 spec:
   to:
     kind: Service
-    name: website
+    name: rabbitmq
   port:
     targetPort: http

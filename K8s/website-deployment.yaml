@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: website
-          image: guutar/simple-bank-website:latest
+          image: guutar/simple-bank-website-k8s:latest
           volumeMounts:
             - name: nginx-cache
               mountPath: /var/cache/nginx
@@ -23,7 +23,7 @@ spec:
             - containerPort: 8080
           env:
             - name: NEXT_PUBLIC_BACKEND_URL
-              value: http://backend:8080
+              value: /api
       volumes:
         - name: nginx-cache
           emptyDir: {}
