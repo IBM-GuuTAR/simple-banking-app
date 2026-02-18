@@ -12,7 +12,7 @@ declare global {
 }
 
 export default function Instana() {
-  const { instanaReportUrl, instanaEumKey } = useAppData()
+  const { instanaReportUrl, instanaEumKey, selectedAccount } = useAppData()
 
   useEffect(() => {
     if (!instanaReportUrl || !instanaEumKey) return
@@ -38,13 +38,17 @@ export default function Instana() {
     window.ineum('trackSessions')
     window.ineum('autoPageDetection', true)
 
+    if (selectedAccount) {
+      window.ineum('user', selectedAccount.id, selectedAccount.displayName)
+    }
+
     const script = document.createElement('script')
     script.src = 'https://eum.instana.io/1.8.1/eum.min.js'
     script.async = true
     script.crossOrigin = 'anonymous'
 
     document.head.appendChild(script)
-  }, [instanaReportUrl, instanaEumKey])
+  }, [instanaReportUrl, instanaEumKey, selectedAccount])
 
   return null
 }

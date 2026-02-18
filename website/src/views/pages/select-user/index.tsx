@@ -1,6 +1,6 @@
 'use client'
 
-import { redirect, RedirectType } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import { useCallback } from 'react'
 import { Container, Stack, Typography } from '@mui/material'
 
@@ -11,14 +11,21 @@ import CoreButton from '@/views/components/core/CoreButton'
 import { PageContainer } from './style'
 
 export default function SelectUserPage() {
+  const router = useRouter()
+
   const { selectUser, displayAccounts } = useAppData()
 
   const handleSelectUser = useCallback(
     (accountId: number) => {
       selectUser(accountId)
-      redirect('/', RedirectType.push)
+
+      if (window.ineum) {
+        window.ineum('user', accountId, displayAccounts[accountId]?.displayName ?? '')
+      }
+
+      router.push('/')
     },
-    [selectUser],
+    [displayAccounts, router, selectUser],
   )
 
   return (

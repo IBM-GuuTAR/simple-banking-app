@@ -1,6 +1,6 @@
 'use client'
 
-import { redirect, RedirectType, useRouter } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Container, InputAdornment, MenuItem, Stack, TextField, Typography } from '@mui/material'
 import AccountCircle from '@mui/icons-material/AccountCircle'
@@ -48,8 +48,8 @@ export default function TransferPage() {
       timestamp: dayjs().unix(),
     })
 
-    redirect('/', RedirectType.push)
-  }, [userId, amount, selectedAccount, insertTransaction])
+    router.push('/')
+  }, [amount, selectedAccount, userId, insertTransaction, router])
 
   const handleGoBack = useCallback(() => {
     router.back()
