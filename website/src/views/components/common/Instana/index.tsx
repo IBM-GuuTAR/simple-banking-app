@@ -1,30 +1,50 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client'
 
-import Script from 'next/script'
+import { useEffect } from 'react'
+import { useAppData } from '@/providers/AppDataProvider'
+
+declare global {
+  interface Window {
+    ineum?: any
+    InstanaEumObject?: any
+  }
+}
 
 export default function Instana() {
-  return (
-    <>
-      {/* eslint-disable-next-line @next/next/no-before-interactive-script-outside-document */}
-      <Script id="instana-inline" strategy="beforeInteractive">
-        {`
-          (function(s,t,a,n){s[t]||(s[t]=a,n=s[a]=function(){n.q.push(arguments)},
-          n.q=[],n.v=2,n.l=1*new Date)})(window,"InstanaEumObject","ineum");
+  const { instanaReportUrl, instanaEumKey } = useAppData()
 
-          ineum('reportingUrl', '${process.env.NEXT_PUBLIC_INSTANA_REPORT_URL}');
-          ineum('key', '${process.env.NEXT_PUBLIC_INSTANA_EUM_KEY}');
-          ineum('trackSessions');
-          ineum('autoPageDetection', true);
-        `}
-      </Script>
+  useEffect(() => {
+    if (!instanaReportUrl || !instanaEumKey) return
+    if (window.ineum) return
 
-      {/* eslint-disable-next-line @next/next/no-before-interactive-script-outside-document */}
-      <Script
-        src="https://eum.instana.io/1.8.1/eum.min.js"
-        strategy="beforeInteractive"
-        crossOrigin="anonymous"
-        integrity="sha384-qFzHZ5BC7HOPEBSYkbYSv+DBWrG34P1QW9mIaCR41db6yOJNYmH4antW6KLkc6v1"
-      />
-    </>
-  )
+    console.log('Initializing Instana EUM...')
+
+    const instanaStan = (s: any, t: any, a: any, n?: any) => {
+      if (!s[t]) {
+        s[t] = a
+        n = s[a] = function (...args: any) {
+          n.q.push(args)
+        }
+        n.q = []
+        n.v = 2
+        n.l = Date.now()
+      }
+    }
+
+    instanaStan(window, 'InstanaEumObject', 'ineum')
+    window.ineum('reportingUrl', instanaReportUrl)
+    window.ineum('key', instanaEumKey)
+    window.ineum('trackSessions')
+    window.ineum('autoPageDetection', true)
+
+    const script = document.createElement('script')
+    script.src = 'https://eum.instana.io/1.8.1/eum.min.js'
+    script.async = true
+    script.crossOrigin = 'anonymous'
+
+    document.head.appendChild(script)
+  }, [instanaReportUrl, instanaEumKey])
+
+  return null
 }

@@ -10,6 +10,10 @@ export type AppDataContextType = {
   selectUser: (accountId: number) => void
   displayAccounts: DisplayAccountData[]
   insertTransaction: (transactionInput: TransactionInput) => void
+  instanaReportUrl: string
+  setInstanaReportUrl: (url: string) => void
+  instanaEumKey: string
+  setInstanaEumKey: (key: string) => void
   isDataLoaded: boolean
 }
 
@@ -24,6 +28,9 @@ export const AppDataProvider = ({ children }: Props) => {
 
   const [displayAccounts, setDisplayAccounts] = useState<DisplayAccountData[]>([])
   const [selectedAccountId, setSelectedAccountId] = useState<number>()
+
+  const [instanaReportUrl, setInstanaReportUrl] = useState<string>(process.env.NEXT_PUBLIC_INSTANA_REPORT_URL ?? '')
+  const [instanaEumKey, setInstanaEumKey] = useState<string>(process.env.NEXT_PUBLIC_INSTANA_EUM_KEY ?? '')
 
   const selectedAccount: DisplayAccountData | undefined = useMemo(
     () => displayAccounts.find((account) => account.id === selectedAccountId),
@@ -71,7 +78,19 @@ export const AppDataProvider = ({ children }: Props) => {
   )
 
   return (
-    <AppDataContext.Provider value={{ selectedAccount, selectUser, displayAccounts, insertTransaction, isDataLoaded }}>
+    <AppDataContext.Provider
+      value={{
+        selectedAccount,
+        selectUser,
+        displayAccounts,
+        insertTransaction,
+        instanaReportUrl,
+        setInstanaReportUrl,
+        instanaEumKey,
+        setInstanaEumKey,
+        isDataLoaded,
+      }}
+    >
       {children}
     </AppDataContext.Provider>
   )
