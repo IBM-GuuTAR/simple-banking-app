@@ -1,25 +1,13 @@
-import type { Metadata } from 'next'
-import { Geist, Geist_Mono } from 'next/font/google'
-import { Stack } from '@mui/material'
+import type Metadata from 'next'
 
 import RootProvider from '@/providers/RootProvider'
 
 import Rendering from '@/views/components/core/Rendering'
 
-import NavBar from '@/views/components/common/Navbar'
 import Instana from '@/views/components/common/Instana'
+import AppContent from '@/views/components/common/AppContent'
 
 import './globals.css'
-
-const geistSans = Geist({
-  variable: '--font-geist-sans',
-  subsets: ['latin'],
-})
-
-const geistMono = Geist_Mono({
-  variable: '--font-geist-mono',
-  subsets: ['latin'],
-})
 
 export const metadata: Metadata = {
   title: 'Create Next App',
@@ -33,21 +21,16 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <head>
-        <Instana />
-      </head>
-      <body className={`${geistSans.variable} ${geistMono.variable}`}>
-        <RootProvider>
+      <RootProvider>
+        <head>
+          <Instana />
+        </head>
+        <body>
           <Rendering>
-            <Stack alignItems="center">
-              <Stack width={425} height="100vh" bgcolor="background.default">
-                <NavBar />
-                {children}
-              </Stack>
-            </Stack>
+            <AppContent>{children}</AppContent>
           </Rendering>
-        </RootProvider>
-      </body>
+        </body>
+      </RootProvider>
     </html>
   )
 }
