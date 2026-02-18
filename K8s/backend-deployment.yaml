@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend
+  namespace: simple-bank
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      containers:
+        - name: backend
+          image: guutar/simple-bank-backend:latest
+          ports:
+            - containerPort: 8080
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: prod
+            - name: SPRING_DATASOURCE_URL
+              value: jdbc:mariadb://mariadb:3306/simplebank
+            - name: SPRING_DATASOURCE_USERNAME
+              value: simplebankuser
+            - name: SPRING_DATASOURCE_PASSWORD
+              value: simplebankpass
+            - name: SPRING_DATASOURCE_DRIVER_CLASS_NAME
+              value: org.mariadb.jdbc.Driver
+            - name: SPRING_RABBITMQ_HOST
+              value: rabbitmq
+            - name: SPRING_RABBITMQ_PORT
+              value: "5672"
+            - name: SPRING_RABBITMQ_USERNAME
+              value: simplebankuser
+            - name: SPRING_RABBITMQ_PASSWORD
+              value: simplebankpass

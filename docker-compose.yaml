@@ -1,6 +1,9 @@
 services:
   mariadb:
-    image: mariadb:11.4
+    build:
+      context: ./database
+      dockerfile: Dockerfile
+    image: guutar/simple-bank-mariadb
     container_name: simple-bank-mariadb
     restart: unless-stopped
     environment:
@@ -10,7 +13,6 @@ services:
       MARIADB_PASSWORD: simplebankpass
     volumes:
       - mariadb_data:/var/lib/mysql
-      - ./config/init.sql:/docker-entrypoint-initdb.d/init.sql
     ports:
       - "3306:3306"
     healthcheck:
@@ -20,6 +22,20 @@ services:
       retries: 5
     networks:
       - simple-bank-net
+  rabbitmq:
+    image: rabbitmq:3.13-management-alpine
+    container_name: simple-bank-rabbitmq
+    restart: unless-stopped
+    environment:
+      RABBITMQ_DEFAULT_USER: simplebankuser
+      RABBITMQ_DEFAULT_PASS: simplebankpass
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    networks:
+      - simple-bank-net
   website:
     build:
       context: ./website
@@ -27,15 +43,15 @@ services:
       args:
         - NEXT_PUBLIC_INSTANA_REPORT_URL=https://eum-orange-saas.instana.io
         - NEXT_PUBLIC_INSTANA_EUM_KEY=XGKoMnXoTKOROE_ZUYmdpw
-        - NEXT_PUBLIC_BACKEND_URL=http://localhost:8080
-    image: simple-bank-website:latest
+        - NEXT_PUBLIC_BACKEND_URL=/api
+    image: guutar/simple-bank-website:latest
     container_name: simple-bank-website
     ports:
       - "80:80"
     environment:
       - NEXT_PUBLIC_INSTANA_REPORT_URL=https://eum-orange-saas.instana.io
       - NEXT_PUBLIC_INSTANA_EUM_KEY=XGKoMnXoTKOROE_ZUYmdpw
-      - NEXT_PUBLIC_BACKEND_URL=http://localhost:8080
+      - NEXT_PUBLIC_BACKEND_URL=/api
     depends_on:
       - backend
     restart: unless-stopped
@@ -45,7 +61,7 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
-    image: simple-bank-backend:latest
+    image: guutar/simple-bank-backend:latest
     container_name: simple-bank-backend
     ports:
       - "8080:8080"
@@ -67,22 +83,11 @@ services:
     restart: unless-stopped
     networks:
       - simple-bank-net
-  rabbitmq:
-    image: rabbitmq:3.13-management-alpine
-    container_name: simple-bank-rabbitmq
-    restart: unless-stopped
-    environment:
-      RABBITMQ_DEFAULT_USER: simplebankuser
-      RABBITMQ_DEFAULT_PASS: simplebankpass
-    ports:
-      - "5672:5672"
-      - "15672:15672"
-    volumes:
-      - rabbitmq_data:/var/lib/rabbitmq
-    networks:
-      - simple-bank-net
   consumer:
-    build: ./consumer
+    build:
+      context: ./consumer
+      dockerfile: Dockerfile
+    image: guutar/simple-bank-consumer:latest
     container_name: simple-bank-consumer
     environment:
       RABBITMQ_URL: amqp://simplebankuser:simplebankpass@rabbitmq:5672
