@@ -4,6 +4,8 @@ import { useRouter } from 'next/navigation'
 import { useCallback } from 'react'
 import { Container, Stack, Typography } from '@mui/material'
 
+import { localStorageService } from '@/service/localStorageService'
+
 import { useAppData } from '@/providers/AppDataProvider'
 
 import CoreButton from '@/views/components/core/CoreButton'
@@ -18,9 +20,12 @@ export default function SelectUserPage() {
   const handleSelectUser = useCallback(
     (accountId: number) => {
       selectUser(accountId)
+      localStorageService.setValue('selectedAccountId', `${accountId}`)
+
+      const displayName: string = displayAccounts.find((account) => account.id === accountId)?.displayName ?? ''
 
       if (window.ineum) {
-        window.ineum('user', accountId, displayAccounts[accountId]?.displayName ?? '')
+        window.ineum('user', accountId, displayName)
       }
 
       router.push('/')

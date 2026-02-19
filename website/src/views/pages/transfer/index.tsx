@@ -41,12 +41,16 @@ export default function TransferPage() {
 
     if (!selectedAccount || !userId || amountNumber <= 0) return
 
-    insertTransaction({
+    await insertTransaction({
       senderId: selectedAccount?.id,
       receiverId: Number(userId),
       amount: amountNumber,
       timestamp: dayjs().unix(),
     })
+
+    if (window.ineum) {
+      window.ineum('reportEvent', 'transfer completed')
+    }
 
     router.push('/')
   }, [amount, selectedAccount, userId, insertTransaction, router])
@@ -64,6 +68,12 @@ export default function TransferPage() {
 
     handleSetDefaultAccount()
   }, [transferableAccounts])
+
+  useEffect(() => {
+    if (window.ineum) {
+      window.ineum('reportEvent', 'visit transfer page')
+    }
+  }, [])
 
   if (!selectedAccount) return <Redirect path="/login" />
   return (

@@ -4,12 +4,14 @@ import { AccountData, DisplayAccountData, TransactionData, TransactionInput } fr
 
 import { accountService } from '@/service/AccountService'
 import { transactionService } from '@/service/TransactionService'
+import { localStorageService } from '@/service/localStorageService'
 
 export type AppDataContextType = {
   selectedAccount?: DisplayAccountData
   selectUser: (accountId: number) => void
   displayAccounts: DisplayAccountData[]
-  insertTransaction: (transactionInput: TransactionInput) => void
+  insertTransaction: (transactionInput: TransactionInput) => Promise<boolean>
+  insert100Transaction: (senderId: number) => Promise<boolean>
   instanaReportUrl: string
   setInstanaReportUrl: (url: string) => void
   instanaEumKey: string
@@ -39,6 +41,17 @@ export const AppDataProvider = ({ children }: Props) => {
 
   useEffect(() => {
     const initialize = async () => {
+      const selectedAccountId = localStorageService.getValue('selectedAccountId')
+      if (selectedAccountId) {
+        setSelectedAccountId(Number(selectedAccountId))
+      }
+
+      const instanaReportUrl = localStorageService.getValue('instanaReportUrl')
+      setInstanaReportUrl(instanaReportUrl ?? '')
+
+      const instanaEumKey = localStorageService.getValue('instanaEumKey')
+      setInstanaEumKey(instanaEumKey ?? '')
+
       const _accounts: AccountData[] = await accountService.fetchAccount()
       const _transactions: TransactionData[] = await transactionService.fetchTransaction()
 
@@ -70,9 +83,21 @@ export const AppDataProvider = ({ children }: Props) => {
   }, [])
 
   const insertTransaction = useCallback(
-    async (transactionInput: TransactionInput) => {
-      await transactionService.insertTransaction(transactionInput)
+    async (transactionInput: TransactionInput): Promise<boolean> => {
+      const isFinished = await transactionService.insertTransaction(transactionInput)
       fetchData()
+      return isFinished
+    },
+    [fetchData],
+  )
+
+  const insert100Transaction = useCallback(
+    async (senderId: number): Promise<boolean> => {
+      const isFinished = await transactionService.insert100Transaction(senderId)
+      if (isFinished) {
+        fetchData()
+      }
+      return isFinished
     },
     [fetchData],
   )
@@ -84,6 +109,7 @@ export const AppDataProvider = ({ children }: Props) => {
         selectUser,
         displayAccounts,
         insertTransaction,
+        insert100Transaction,
         instanaReportUrl,
         setInstanaReportUrl,
         instanaEumKey,

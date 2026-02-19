@@ -12,10 +12,10 @@ declare global {
 }
 
 export default function Instana() {
-  const { instanaReportUrl, instanaEumKey, selectedAccount } = useAppData()
+  const { instanaReportUrl, instanaEumKey, selectedAccount, isDataLoaded } = useAppData()
 
   useEffect(() => {
-    if (!instanaReportUrl || !instanaEumKey) return
+    if (!isDataLoaded || !instanaReportUrl || !instanaEumKey) return
     if (window.ineum) return
 
     console.log('Initializing Instana EUM...')
@@ -48,7 +48,7 @@ export default function Instana() {
     script.crossOrigin = 'anonymous'
 
     document.head.appendChild(script)
-  }, [instanaReportUrl, instanaEumKey, selectedAccount])
+  }, [instanaReportUrl, instanaEumKey, selectedAccount, isDataLoaded])
 
   return null
 }
