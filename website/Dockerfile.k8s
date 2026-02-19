@@ -11,6 +11,7 @@ COPY package.json ./
 
 RUN corepack enable && yarn install --frozen-lockfile
 
+ENV NODE_OPTIONS="--import @instana/collector/esm-register.mjs"
 COPY . .
 
 RUN yarn build 
