@@ -81,7 +81,7 @@ services:
       - simple-bank-net
   consumer:
     build:
-      context: ./consumer
+      context: ./rabbitmq-consumer
       dockerfile: Dockerfile
     image: guutar/simple-bank-consumer:latest
     container_name: simple-bank-consumer
