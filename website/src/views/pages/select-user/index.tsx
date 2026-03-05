@@ -1,8 +1,10 @@
 'use client'
 
-import { redirect, RedirectType } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import { useCallback } from 'react'
 import { Container, Stack, Typography } from '@mui/material'
+
+import { localStorageService } from '@/service/localStorageService'
 
 import { useAppData } from '@/providers/AppDataProvider'
 
@@ -11,14 +13,24 @@ import CoreButton from '@/views/components/core/CoreButton'
 import { PageContainer } from './style'
 
 export default function SelectUserPage() {
+  const router = useRouter()
+
   const { selectUser, displayAccounts } = useAppData()
 
   const handleSelectUser = useCallback(
     (accountId: number) => {
       selectUser(accountId)
-      redirect('/', RedirectType.push)
+      localStorageService.setValue('selectedAccountId', `${accountId}`)
+
+      const displayName: string = displayAccounts.find((account) => account.id === accountId)?.displayName ?? ''
+
+      if (window.ineum) {
+        window.ineum('user', accountId, displayName)
+      }
+
+      router.push('/')
     },
-    [selectUser],
+    [displayAccounts, router, selectUser],
   )
 
   return (

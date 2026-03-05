@@ -33,4 +33,15 @@ public class TransactionController {
     public void insertTransaction(@RequestBody TransactionInput transaction) {
         service.save(transaction);
     }
+
+    @GetMapping("/latency")
+    public boolean getLatencyStatus() {
+        return service.getLatencyStatus();
+    }
+
+    @PostMapping("/toggle-latency")
+    @ResponseStatus(HttpStatus.OK)
+    public void insertTransactionWithLatency() {
+        service.toggleLatency();
+    }
 }

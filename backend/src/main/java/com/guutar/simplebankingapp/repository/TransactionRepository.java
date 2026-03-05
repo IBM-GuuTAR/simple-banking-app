@@ -15,13 +15,23 @@ public class TransactionRepository {
 
     private final JdbcTemplate jdbc;
     private final RabbitTemplate rabbitTemplate;
+    private boolean isLatency;
 
     public TransactionRepository(JdbcTemplate jdbc, RabbitTemplate rabbitTemplate) {
         this.jdbc = jdbc;
         this.rabbitTemplate = rabbitTemplate;
+        this.isLatency = false;
     }
 
     public List<Transaction> findAll() {
+        if (this.isLatency) {
+            try {
+                Thread.sleep(5000);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+        }
+
         String sql = "SELECT * FROM transaction";
         return jdbc.query(sql, (rs, rowNum)
                 -> new Transaction(
@@ -50,10 +60,26 @@ public class TransactionRepository {
     }
 
     public void sendTxMessage(TransactionInput transaction) {
+        if (this.isLatency) {
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+        }
+
         rabbitTemplate.convertAndSend(
                 RabbitMQConfig.EXCHANGE,
                 RabbitMQConfig.ROUTING_KEY,
                 transaction
         );
+    }
+
+    public boolean getLatencyStatus() {
+        return this.isLatency;
+    }
+
+    public void toggleLatency() {
+        this.isLatency = !this.isLatency;
     }
 }

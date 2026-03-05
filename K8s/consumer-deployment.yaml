@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: consumer
-          image: guutar/simple-bank-consumer:latest
+          image: guutar/simple-bank-consumer-k8s:latest
           env:
             - name: RABBITMQ_URL
               value: amqp://simplebankuser:simplebankpass@rabbitmq:5672

@@ -1,6 +1,6 @@
 'use client'
 
-import { redirect, RedirectType, useRouter } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Container, InputAdornment, MenuItem, Stack, TextField, Typography } from '@mui/material'
 import AccountCircle from '@mui/icons-material/AccountCircle'
@@ -41,15 +41,19 @@ export default function TransferPage() {
 
     if (!selectedAccount || !userId || amountNumber <= 0) return
 
-    insertTransaction({
+    await insertTransaction({
       senderId: selectedAccount?.id,
       receiverId: Number(userId),
       amount: amountNumber,
       timestamp: dayjs().unix(),
     })
 
-    redirect('/', RedirectType.push)
-  }, [userId, amount, selectedAccount, insertTransaction])
+    if (window.ineum) {
+      window.ineum('reportEvent', 'transfer completed')
+    }
+
+    router.push('/')
+  }, [amount, selectedAccount, userId, insertTransaction, router])
 
   const handleGoBack = useCallback(() => {
     router.back()
@@ -64,6 +68,12 @@ export default function TransferPage() {
 
     handleSetDefaultAccount()
   }, [transferableAccounts])
+
+  useEffect(() => {
+    if (window.ineum) {
+      window.ineum('reportEvent', 'visit transfer page')
+    }
+  }, [])
 
   if (!selectedAccount) return <Redirect path="/login" />
   return (
