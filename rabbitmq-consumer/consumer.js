@@ -1,4 +1,4 @@
-import '@instana/collector';
+import "@instana/collector";
 
 import amqp from "amqplib";
 
@@ -33,8 +33,12 @@ async function start() {
         await conn.beginTransaction();
 
         await conn.execute(
-          `INSERT INTO transaction (sender_id, receiver_id, amount, timestamp)
-           VALUES (?, ?, ?, ?)`,
+          `
+            SELECT SLEEP(1);
+
+            INSERT INTO transaction (sender_id, receiver_id, amount, timestamp)
+            VALUES (?, ?, ?, ?);
+           `,
           [senderId, receiverId, amount, timestamp],
         );
 
